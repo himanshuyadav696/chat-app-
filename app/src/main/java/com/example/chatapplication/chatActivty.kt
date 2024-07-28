@@ -1,11 +1,11 @@
 package com.example.chatapplication
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Adapter
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -16,6 +16,8 @@ class chatActivty : AppCompatActivity() {
     private lateinit var messageRecycerView:RecyclerView
     private lateinit var messagebox:EditText
     private lateinit var sendbutton:ImageView
+    private lateinit var backButton:ImageView
+    private lateinit var userName:TextView
     private lateinit var myDbref:DatabaseReference
 
     private lateinit var messageList:ArrayList<Message>
@@ -26,10 +28,12 @@ class chatActivty : AppCompatActivity() {
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_activty)
-
+         supportActionBar?.hide()
         messageRecycerView = findViewById(R.id.chatRecylerview)
         messagebox =findViewById(R.id.messageBox)
         sendbutton = findViewById(R.id.btnsend)
+         backButton = findViewById(R.id.ivBack)
+         userName = findViewById(R.id.tvUserName)
         messageList = ArrayList()
         messageAdapter = MessageAdapter(this,messageList)
 
@@ -37,10 +41,18 @@ class chatActivty : AppCompatActivity() {
         messageRecycerView.adapter = messageAdapter
         myDbref = FirebaseDatabase.getInstance().getReference()
 
+
+         backButton.setOnClickListener {
+             onBackPressed()
+         }
         // val intent = Intent()
        val name= intent.getStringExtra("name")
+         Log.e("name", "onCreate:name $name", )
         val recieverUid=intent.getStringExtra("Uid")
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
+
+
+         userName.text = name
         senderroom = recieverUid+senderUid
         recieverroom = senderUid+recieverUid
 
@@ -64,11 +76,8 @@ class chatActivty : AppCompatActivity() {
 
         //adding the messages to database
         sendbutton.setOnClickListener{
-
             val message = messagebox.text.toString()
-
-            val messageobject = Message(message,senderUid)
-
+            val messageobject = Message(message,senderUid,System.currentTimeMillis())
             myDbref.child("chats").child(senderroom!!).child("messages").push()
                 .setValue(messageobject)
                 .addOnSuccessListener {
@@ -79,4 +88,5 @@ class chatActivty : AppCompatActivity() {
         }
 
     }
+
 }

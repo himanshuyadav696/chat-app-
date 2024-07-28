@@ -1,31 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@drawable/edt_background"
-    android:layout_marginTop="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="10dp"
     android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/txt_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:text="Himanshu"
-            android:textSize="30sp">
-
-        </TextView>
-  <!--      <View
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/txt_name">
-
-        </View>
-
-        -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUserImage"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:cardCornerRadius="360dp"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+                <ImageView
+                    android:id="@+id/ivUserImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_userplaceholder"/>
 
 
+        </androidx.cardview.widget.CardView>
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/llChatName"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="@id/cardUserImage"
+            app:layout_constraintBottom_toBottomOf="@id/cardUserImage"
+            app:layout_constraintStart_toEndOf="@id/cardUserImage">
+
+                <TextView
+                    android:id="@+id/txt_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Himanshu"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tvLastMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Himanshu"
+                    android:textSize="12sp"/>
+        </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

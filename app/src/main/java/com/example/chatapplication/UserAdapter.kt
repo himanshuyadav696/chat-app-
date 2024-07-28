@@ -19,7 +19,6 @@ class UserAdapter(val context:Context,val userList:ArrayList<User>):RecyclerView
         holder.txtname.text = currentUser.name
 
         holder.itemView.setOnClickListener{
-
             val intent = Intent(context,chatActivty::class.java)
             intent.putExtra("name",currentUser.name)
             intent.putExtra("Uid",currentUser.uid)

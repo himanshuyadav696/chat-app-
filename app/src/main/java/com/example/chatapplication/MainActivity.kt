@@ -27,18 +27,15 @@ class MainActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         mDbref = FirebaseDatabase.getInstance().getReference()
-
         userrecyclerview = findViewById(R.id.userRecylerView)
         userList = ArrayList()
         Adapter = UserAdapter(this,userList)
 
         userrecyclerview.layoutManager =LinearLayoutManager(this)
         userrecyclerview.adapter =Adapter
-
         mDbref.child("user").addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-
-                userList.clear()
+                //userList.clear()
                for(postsnapshot in snapshot.children){
 
                    val currentuser = postsnapshot.getValue(User::class.java)
@@ -57,9 +54,15 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-
     }
 
+    /*private fun updateOnlineStatus() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val userRef = FirebaseDatabase.getInstance().getReference("user").child(userId!!)
+        userRef.child("online").setValue(true)
+        userRef.child("online").onDisconnect().setValue(false)
+    }
+*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return super.onCreateOptionsMenu(menu)

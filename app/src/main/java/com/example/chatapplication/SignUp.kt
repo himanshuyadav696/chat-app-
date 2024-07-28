@@ -3,6 +3,7 @@ package com.example.chatapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -44,19 +45,19 @@ class SignUp : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful)
                 {
-                    AddUsertoDatabase(name,email,mAuth.currentUser?.uid!!)
+                    AddUsertoDatabase(name,email,mAuth.currentUser?.uid!!,true)
                     val intent = Intent(this,MainActivity::class.java)
                     finish()
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "Error occured", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error occured ${task.exception}", Toast.LENGTH_SHORT).show()
+                    Log.e("TAG", "signUp: ${task.exception}", )
                 }
             }
     }
 
-    private  fun AddUsertoDatabase(name: String,email: String,uid:String){
+    private  fun AddUsertoDatabase(name: String,email: String,uid:String,online:Boolean){
         mDbref =FirebaseDatabase.getInstance().getReference()
-        mDbref.child("user").child(uid).setValue(User(name, email, uid))
-
+        mDbref.child("user").child(uid).setValue(User(name, email, uid,online))
     }
 }

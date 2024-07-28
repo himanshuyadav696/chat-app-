@@ -8,12 +8,16 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+
 class Login : AppCompatActivity() {
     private lateinit var edtEmail:EditText
     private lateinit var edtPassword:EditText
     private lateinit var btnLogin:Button
     private lateinit var btnSignUp:Button
     private lateinit var mAuth:FirebaseAuth
+    private lateinit var mDbref: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +36,24 @@ class Login : AppCompatActivity() {
             startActivity(intent)
         }
         btnLogin.setOnClickListener {
-            val email =edtEmail.text.toString()
-            val password =edtPassword.text.toString()
-            login(email,password)
-            
+            checkValidation()
         }
     }
+
+    private fun checkValidation() {
+        val email =edtEmail.text.toString()
+        val password =edtPassword.text.toString()
+        if(email.isNullOrEmpty()){
+            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
+        }
+        else if(password.isNullOrEmpty()){
+            Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            login(email,password)
+        }
+    }
+
     private fun login(email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -45,6 +61,11 @@ class Login : AppCompatActivity() {
                     val intent = Intent(this,MainActivity::class.java)
                     finish()
                     startActivity(intent)
+                    mDbref = FirebaseDatabase.getInstance().getReference()
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid
+                    val userRef = FirebaseDatabase.getInstance().getReference("user").child(userId!!)
+                    userRef.child("online").setValue(true)
+
                 } else {
                     Toast.makeText(this, "User not Found", Toast.LENGTH_SHORT).show()
                 }
