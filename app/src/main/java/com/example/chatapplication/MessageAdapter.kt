@@ -5,8 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -37,11 +41,21 @@ class MessageAdapter(val context:Context, private val messageList: ArrayList<Mes
         if(holder.javaClass == SentViewHolder::class.java){
             val currensendtmessage = messageList[position]
             val viewHolder = holder as SentViewHolder
-
             holder.sendmessage.text = currensendtmessage.message
             holder.tvSendTime.text = currensendtmessage.timeStamp?.let { Date(it) }
                 ?.let { formatter.format(it) }?.capitalize()
-
+            if(currensendtmessage.message?.contains("https") == true){
+                holder.cardSendImage.visibility = View.VISIBLE
+                holder.sendmessage.visibility = View.GONE
+                Glide.with(context)
+                    .load(currensendtmessage.message)
+                    .into(holder.sendImage)
+                Toast.makeText(context, "image $position ${currensendtmessage.message}", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                holder.sendmessage.visibility = View.VISIBLE
+                holder.cardSendImage.visibility = View.GONE
+            }
             Log.e("TAG", "onBindViewHolder: ${currensendtmessage.timeStamp}", )
         }
         else
@@ -51,6 +65,19 @@ class MessageAdapter(val context:Context, private val messageList: ArrayList<Mes
             holder.recievemessage.text = currentrecmessage.message
             holder.tvRecievTime.text = currentrecmessage.timeStamp?.let { Date(it) }
                 ?.let { formatter.format(it) }?.capitalize()
+
+            if(currentrecmessage.message?.contains("https") == true){
+                holder.cardRecieve.visibility = View.VISIBLE
+                holder.recievemessage.visibility = View.GONE
+                Glide.with(context)
+                    .load(currentrecmessage.message)
+                    .into(holder.recImage)
+                Toast.makeText(context, "image $position ${currentrecmessage.message}", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                holder.recievemessage.visibility = View.VISIBLE
+                holder.cardRecieve.visibility = View.GONE
+            }
             Log.e("TAG", "onBindViewHolder: ${currentrecmessage.timeStamp}", )
         }
 
@@ -73,14 +100,16 @@ class MessageAdapter(val context:Context, private val messageList: ArrayList<Mes
     }
 
     class SentViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-
         val sendmessage = itemView.findViewById<TextView>(R.id.txt_sentmessage)
         val tvSendTime = itemView.findViewById<TextView>(R.id.tvSendTime)
+        val cardSendImage = itemView.findViewById<CardView>(R.id.cardSendImage)
+        val sendImage = itemView.findViewById<ImageView>(R.id.ivSendImage)
     }
 
     class recieveViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-
         val recievemessage = itemView.findViewById<TextView>(R.id.txt_recievemessage)
         val tvRecievTime = itemView.findViewById<TextView>(R.id.tvRecieveTime)
+        val cardRecieve = itemView.findViewById<CardView>(R.id.cardRecieve)
+        val recImage = itemView.findViewById<ImageView>(R.id.ivRecieve)
     }
 }

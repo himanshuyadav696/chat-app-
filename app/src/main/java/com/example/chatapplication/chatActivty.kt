@@ -29,7 +29,6 @@ class chatActivty : AppCompatActivity() {
     private lateinit var userName:TextView
     private lateinit var tvOnline:TextView
     private lateinit var btnSelectImage:ImageView
-
     private lateinit var myDbref:DatabaseReference
 
     private lateinit var messageList:ArrayList<Message>
@@ -153,7 +152,28 @@ class chatActivty : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK) {
             val image = data?.data
-
+            if (image != null) {
+                uploadImageToFirebase(image)
+            }
         }
+    }
+
+    private fun uploadImageToFirebase(imageUri: Uri) {
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/${UUID.randomUUID()}")
+        storageRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                    val messageObject = Message(uri.toString(), senderUid, System.currentTimeMillis())
+                    myDbref.child("chats").child(senderroom!!).child("messages").push()
+                        .setValue(messageObject)
+                        .addOnSuccessListener {
+                            myDbref.child("chats").child(recieverroom!!).child("messages").push()
+                                .setValue(messageObject)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseStorage", "Image upload failed", e)
+            }
     }
 }
