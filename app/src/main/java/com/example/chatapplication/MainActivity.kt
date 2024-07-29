@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.RecoverySystem
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Adapter
@@ -35,11 +36,11 @@ class MainActivity : AppCompatActivity() {
         userrecyclerview.adapter =Adapter
         mDbref.child("user").addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                //userList.clear()
+                userList.clear()
                for(postsnapshot in snapshot.children){
 
                    val currentuser = postsnapshot.getValue(User::class.java)
-
+                   Log.e("TAG", "onDataChange: ${currentuser?.online}", )
                    if(mAuth.currentUser?.uid!=currentuser?.uid)
                    {
                        userList.add(currentuser!!)

@@ -1,6 +1,8 @@
 package com.example.chatapplication
 
+import SharedPreferencesHelper
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 
 import android.widget.Button
@@ -18,11 +20,12 @@ class Login : AppCompatActivity() {
     private lateinit var btnSignUp:Button
     private lateinit var mAuth:FirebaseAuth
     private lateinit var mDbref: DatabaseReference
+    private lateinit var prefsHelper: SharedPreferencesHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        prefsHelper = SharedPreferencesHelper(this)
         mAuth = FirebaseAuth.getInstance()
 
         edtEmail =findViewById(R.id.edt_email)
@@ -65,6 +68,8 @@ class Login : AppCompatActivity() {
                     val userId = FirebaseAuth.getInstance().currentUser?.uid
                     val userRef = FirebaseDatabase.getInstance().getReference("user").child(userId!!)
                     userRef.child("online").setValue(true)
+                    prefsHelper.saveBoolean("isLogin",true)
+                    prefsHelper.saveString("userId",userId)
 
                 } else {
                     Toast.makeText(this, "User not Found", Toast.LENGTH_SHORT).show()

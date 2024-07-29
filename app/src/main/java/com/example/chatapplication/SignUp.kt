@@ -58,6 +58,6 @@ class SignUp : AppCompatActivity() {
 
     private  fun AddUsertoDatabase(name: String,email: String,uid:String,online:Boolean){
         mDbref =FirebaseDatabase.getInstance().getReference()
-        mDbref.child("user").child(uid).setValue(User(name, email, uid,online))
+        mDbref.child("user").child(uid).setValue(User(name, email, uid,"loading...",online))
     }
 }
